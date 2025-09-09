@@ -1,8 +1,8 @@
-# 🎵 EarFunker - 练耳大师
+# 🎵 EarFunker
 
 一个有趣的互动式练耳训练应用，通过可爱的角色动画和彩虹轨迹帮助用户提升音程识别能力。
 
-![EarFunker Preview](./docs/preview.png)
+![EarFunker Preview](./public/images/preview1.png)
 
 ## ✨ 主要功能
 
@@ -58,7 +58,12 @@ yarn dev
 ```
 
 4. **打开浏览器**
-访问 `http://localhost:5173` 开始使用
+访问 `http://localhost:8000` 开始使用
+
+> **⚠️ 重要提示**：角色图片文件位于 `public/images/` 目录中。如果角色无法显示，请确保：
+> - `public/images/` 目录包含所有 `.svg` 文件
+> - 运行了 `npm run dev` 启动开发服务器
+> - 或运行了 `npm run build` 生成生产版本
 
 ### 生产构建
 
@@ -178,8 +183,10 @@ npm install
 - 在用户交互后才能播放音频
 
 **3. 角色图片不显示**
-- 确保 `public/images/` 目录包含所有SVG文件
-- 检查图片路径是否正确
+- **检查 public 目录**：确保 `public/images/` 目录包含所有SVG文件
+- **确认 .gitignore 配置**：`public/` 目录不应该被忽略
+- **重新构建**：运行 `npm run build` 重新生成 dist 目录
+- **开发模式**：使用 `npm run dev` 启动开发服务器
 
 **4. 动画卡顿**
 - 关闭开发者工具
@@ -214,9 +221,7 @@ npm install
 
 ## 📞 联系方式
 
-- **问题反馈**: [GitHub Issues](https://github.com/your-username/EarFunker/issues)
-- **功能建议**: [GitHub Discussions](https://github.com/your-username/EarFunker/discussions)
-- **邮箱**: your-email@example.com
+- **邮箱**: cyanlin0104@gmail.com
 
 ---
 

@@ -759,7 +759,7 @@ const App: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            🎵 EarFunker 练耳大师 🎵
+            🎵 EarFunker 🎵
           </motion.h1>
       
       {/* 分数和统计信息 */}

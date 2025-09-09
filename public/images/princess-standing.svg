@@ -1,0 +1,62 @@
+<svg width="40" height="40" xmlns="http://www.w3.org/2000/svg" style="image-rendering: pixelated;">
+  <!-- 公主站立姿态 -->
+  
+  <!-- 皇冠 -->
+  <rect x="8" y="2" width="24" height="3" fill="#FFD700"/>
+  <rect x="6" y="5" width="28" height="2" fill="#FFD700"/>
+  <rect x="10" y="0" width="2" height="4" fill="#FFD700"/>
+  <rect x="18" y="0" width="4" height="4" fill="#FFD700"/>
+  <rect x="28" y="0" width="2" height="4" fill="#FFD700"/>
+  
+  <!-- 宝石装饰 -->
+  <rect x="17" y="3" width="6" height="2" fill="#FF69B4"/>
+  
+  <!-- 脸部 -->
+  <rect x="8" y="7" width="24" height="2" fill="#FFDBAC"/>
+  <rect x="6" y="9" width="28" height="8" fill="#FFDBAC"/>
+  
+  <!-- 头发 -->
+  <rect x="4" y="7" width="4" height="6" fill="#DDA0DD"/>
+  <rect x="32" y="7" width="4" height="6" fill="#DDA0DD"/>
+  <rect x="4" y="13" width="32" height="4" fill="#DDA0DD"/>
+  
+  <!-- 眼睛 -->
+  <rect x="12" y="11" width="2" height="2" fill="black"/>
+  <rect x="26" y="11" width="2" height="2" fill="black"/>
+  
+  <!-- 眼睫毛 -->
+  <rect x="11" y="10" width="1" height="1" fill="black"/>
+  <rect x="14" y="10" width="1" height="1" fill="black"/>
+  <rect x="25" y="10" width="1" height="1" fill="black"/>
+  <rect x="28" y="10" width="1" height="1" fill="black"/>
+  
+  <!-- 嘴巴 -->
+  <rect x="18" y="15" width="4" height="1" fill="#FF69B4"/>
+  
+  <!-- 身体 - 粉色连衣裙上部 -->
+  <rect x="10" y="17" width="20" height="10" fill="#FF69B4"/>
+  
+  <!-- 连衣裙装饰 -->
+  <rect x="12" y="19" width="16" height="2" fill="#FFB6C1"/>
+  <rect x="16" y="23" width="8" height="2" fill="#FFB6C1"/>
+  
+  <!-- 手臂 -->
+  <rect x="6" y="21" width="4" height="6" fill="#FFDBAC"/>
+  <rect x="30" y="21" width="4" height="6" fill="#FFDBAC"/>
+  
+  <!-- 连衣裙下摆 -->
+  <rect x="8" y="27" width="24" height="12" fill="#FF69B4"/>
+  <rect x="6" y="35" width="28" height="4" fill="#FF69B4"/>
+  
+  <!-- 裙摆装饰 -->
+  <rect x="10" y="31" width="20" height="2" fill="#FFB6C1"/>
+  <rect x="8" y="37" width="24" height="2" fill="#FFB6C1"/>
+  
+  <!-- 腿部 -->
+  <rect x="14" y="39" width="3" height="6" fill="#FFDBAC"/>
+  <rect x="23" y="39" width="3" height="6" fill="#FFDBAC"/>
+  
+  <!-- 鞋子 -->
+  <rect x="12" y="45" width="7" height="4" fill="#FF1493"/>
+  <rect x="21" y="45" width="7" height="4" fill="#FF1493"/>
+</svg>
