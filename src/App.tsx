@@ -670,7 +670,9 @@ const App: React.FC = () => {
       chapterReferenceMode: chapter.referenceMode, // 使用章节的参考音模式
       // 多目标音配置
       enableMultiTarget: level.enableMultiTarget || false,
-      multiTargetCount: level.multiTargetCount || 3
+      multiTargetCount: level.multiTargetCount || 3,
+      maxSequentialInterval: settings.maxSequentialInterval, // 使用用户设置的最大连续音程
+      referenceNoteDegree: undefined // 关卡模式不使用自定义参考音
     };
     setSettings(levelSettings);
     gameLogic.updateSettings(levelSettings);

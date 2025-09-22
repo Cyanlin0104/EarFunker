@@ -101,6 +101,38 @@ const Settings: React.FC<SettingsProps> = ({ settings, onSettingsChange, onClose
             </div>
           </div>
 
+          {/* 参考音设置 (仅首调模式显示) */}
+          {tempSettings.trainingMode === 'solfege' && (
+            <div className="setting-group">
+              <h3>🎹 参考音设置</h3>
+              <p style={{ fontSize: '0.85rem', color: '#718096', marginBottom: '10px' }}>选择参考音在大调音阶中的位置</p>
+              <div className="setting-options" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px' }}>
+                {[
+                  { value: undefined, label: '默认(1)' },
+                  { value: 1, label: '1 (Do)' },
+                  { value: 2, label: '2 (Re)' },
+                  { value: 3, label: '3 (Mi)' },
+                  { value: 4, label: '4 (Fa)' },
+                  { value: 5, label: '5 (Sol)' },
+                  { value: 6, label: '6 (La)' },
+                  { value: 7, label: '7 (Si)' }
+                ].map(({ value, label }) => (
+                  <button
+                    key={value ?? 'default'}
+                    className={`setting-option ${tempSettings.referenceNoteDegree === value ? 'active' : ''}`}
+                    style={{ padding: '8px', fontSize: '0.9rem' }}
+                    onClick={() => setTempSettings({
+                      ...tempSettings,
+                      referenceNoteDegree: value
+                    })}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* 调性选择 (仅首调模式显示) */}
           {tempSettings.trainingMode === 'solfege' && (
             <div className="setting-group">
@@ -244,6 +276,37 @@ const Settings: React.FC<SettingsProps> = ({ settings, onSettingsChange, onClose
                       onClick={() => handleMultiTargetCountChange(count)}
                     >
                       {count}个
+                    </button>
+                  ))}
+                </div>
+                
+                {/* 最大连续音程设置 */}
+                <h4 style={{ marginTop: '15px', marginBottom: '10px', color: '#4a5568' }}>相邻音程最大距离</h4>
+                <p style={{ fontSize: '0.85rem', color: '#718096', marginBottom: '10px' }}>限制相邻两个音之间的最大距离</p>
+                <div className="setting-options" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px' }}>
+                  {[
+                    { value: 2, label: '2个半音' },
+                    { value: 3, label: '3个半音' },
+                    { value: 4, label: '4个半音' },
+                    { value: 5, label: '5个半音' },
+                    { value: 7, label: '7个半音' },
+                    { value: 9, label: '9个半音' },
+                    { value: 12, label: '12个半音' },
+                    { value: 15, label: '15个半音' },
+                    { value: 18, label: '18个半音' },
+                    { value: 21, label: '21个半音' },
+                    { value: 24, label: '24个半音' }
+                  ].map(({ value, label }) => (
+                    <button
+                      key={value}
+                      className={`setting-option ${tempSettings.maxSequentialInterval === value ? 'active' : ''}`}
+                      style={{ padding: '8px', fontSize: '0.9rem' }}
+                      onClick={() => setTempSettings({
+                        ...tempSettings,
+                        maxSequentialInterval: value
+                      })}
+                    >
+                      {label}
                     </button>
                   ))}
                 </div>

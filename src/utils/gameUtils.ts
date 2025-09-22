@@ -10,7 +10,9 @@ export class GameLogic {
     chapterReferenceMode: 'fixed-1',
     // 多目标音模式默认配置
     enableMultiTarget: false,
-    multiTargetCount: 3
+    multiTargetCount: 3,
+    maxSequentialInterval: 12, // 默认最大连续音程为一个八度
+    referenceNoteDegree: undefined // 默认使用1作为参考音
   };
 
   // 更新设置
@@ -29,6 +31,15 @@ export class GameLogic {
       // 首调模式：根据章节参考音模式计算
       const keySignature = this.settings.keySignature; // 用户设置的1(Do)
       
+      // 如果设置了自定义参考音度数（自由训练模式）
+      if (this.settings.referenceNoteDegree !== undefined && this.settings.referenceNoteDegree >= 1 && this.settings.referenceNoteDegree <= 7) {
+        // 大调音阶的半音偏移：1(0) 2(2) 3(4) 4(5) 5(7) 6(9) 7(11)
+        const majorScaleOffsets = [0, 2, 4, 5, 7, 9, 11];
+        const offset = majorScaleOffsets[this.settings.referenceNoteDegree - 1];
+        return keySignature + offset;
+      }
+      
+      // 关卡模式的参考音逻辑
       switch (this.settings.chapterReferenceMode) {
         case 'fixed-1':
           // 第一章：参考音是1(Do)
@@ -50,12 +61,25 @@ export class GameLogic {
 
   // 生成多个连续目标音
   generateMultipleTargetNotes(referenceNote: number): { targetNotes: number[]; intervals: Interval[] } {
+    console.log('🎼 generateMultipleTargetNotes called:', {
+      referenceNote,
+      multiTargetCount: this.settings.multiTargetCount,
+      maxSequentialInterval: this.settings.maxSequentialInterval,
+      isChromatic: this.settings.isChromatic
+    });
+    
     const count = this.settings.multiTargetCount;
     const targetNotes: number[] = [];
     const intervals: Interval[] = [];
     
     // 确保生成不重复的目标音
     const usedNotes = new Set<number>([referenceNote]);
+    
+    // 获取最大连续音程限制（相邻两个音之间的最大距离）
+    const maxSequentialInterval = this.settings.maxSequentialInterval || 24; // 默认最大2个八度
+    
+    // 用于追踪生成音符的基准音（第一个是参考音，之后是前一个目标音）
+    let baseNote = referenceNote;
     
     for (let i = 0; i < count; i++) {
       let attempts = 0;
@@ -64,9 +88,11 @@ export class GameLogic {
       
       // 尝试生成不重复的目标音，最多尝试50次
       do {
-        const result = this.generateTargetNote(referenceNote);
+          // 后续目标音：基于前一个目标音生成，并限制相邻音程的距离
+        const result = this.generateTargetNoteWithSequentialLimit(baseNote, maxSequentialInterval);
         targetNote = result.targetNote;
-        interval = result.interval;
+        // 计算相对于参考音的音程（用于显示）
+        interval = this.calculateInterval(referenceNote, targetNote) || INTERVALS[0];
         attempts++;
       } while (usedNotes.has(targetNote) && attempts < 50);
       
@@ -74,9 +100,107 @@ export class GameLogic {
       targetNotes.push(targetNote);
       intervals.push(interval);
       usedNotes.add(targetNote);
+      
+      // 更新基准音为当前目标音，用于生成下一个音
+      baseNote = targetNote;
     }
     
     return { targetNotes, intervals };
+  }
+
+  // 根据前一个音生成下一个目标音，限制相邻音程的距离
+  generateTargetNoteWithSequentialLimit(previousNote: number, maxInterval: number): { targetNote: number; interval: Interval } {
+    console.log('🎵 generateTargetNoteWithSequentialLimit called:', {
+      previousNote,
+      maxInterval,
+      isChromatic: this.settings.isChromatic,
+      enableMultiTarget: this.settings.enableMultiTarget
+    });
+    
+    // 相邻音程的限制就是 maxInterval
+    const upRange = Math.min(this.settings.noteRangeUp, maxInterval);
+    const downRange = Math.min(this.settings.noteRangeDown, maxInterval);
+    const isChromatic = this.settings.isChromatic;
+    const keySignature = this.settings.keySignature;
+    
+    // 定义可用的目标音符
+    let availableTargets: { note: number; direction: 'up' | 'down'; semitones: number }[] = [];
+    
+    if (isChromatic) {
+      // 半音模式：基于用户调性的12个半音，在多个八度中选择
+      for (let octave = -1; octave <= 1; octave++) {
+        for (let i = 0; i < 12; i++) {
+          const note = keySignature + i + (octave * 12);
+          if (note >= 36 && note <= 96 && note !== previousNote) {
+            const semitoneDistance = Math.abs(note - previousNote);
+            const direction = note > previousNote ? 'up' : 'down';
+            const maxRange = direction === 'up' ? upRange : downRange;
+            
+            if (semitoneDistance <= maxRange && semitoneDistance <= maxInterval) {
+              availableTargets.push({ 
+                note, 
+                direction, 
+                semitones: semitoneDistance 
+              });
+            }
+          }
+        }
+      }
+    } else {
+      // 自然音模式：基于用户调性的大调音阶
+      const majorScaleOffsets = [0, 2, 4, 5, 7, 9, 11];
+      
+      // 生成扩展的音阶音符（多个八度）
+      const scaleNotes: number[] = [];
+      
+      for (let octave = -2; octave <= 2; octave++) {
+        for (const offset of majorScaleOffsets) {
+          const note = keySignature + offset + (octave * 12);
+          if (note >= 36 && note <= 96) {
+            scaleNotes.push(note);
+          }
+        }
+      }
+      // 打印scaleNotes、previousNote和maxInterval，便于调试
+      // 注意：生产环境请移除console.log
+      console.log('scaleNotes:', scaleNotes);
+      console.log('previousNote:', previousNote);
+      console.log('maxInterval:', maxInterval);
+      // 按音高排序
+      scaleNotes.sort((a, b) => a - b);
+      
+      // 找到在范围内的目标音
+      for (const note of scaleNotes) {
+        if (note === previousNote) continue;
+        
+        const semitoneDistance = Math.abs(note - previousNote);
+        const direction = note > previousNote ? 'up' : 'down';
+        const maxRange = direction === 'up' ? upRange : downRange;
+        
+        if (semitoneDistance <= maxRange && semitoneDistance <= maxInterval) {
+          availableTargets.push({ 
+            note, 
+            direction, 
+            semitones: semitoneDistance 
+          });
+        }
+      }
+    }
+    
+    if (availableTargets.length === 0) {
+      // 如果没有可用目标，返回前一个音上方的大二度
+      const fallbackNote = previousNote + 2;
+      availableTargets.push({ note: fallbackNote, direction: 'up', semitones: 2 });
+    }
+    
+    // 随机选择一个目标音
+    const selectedTarget = availableTargets[Math.floor(Math.random() * availableTargets.length)];
+    
+    // 找到对应的音程
+    const interval = INTERVALS.find(int => int.semitones === selectedTarget.semitones) || 
+                    INTERVALS.find(int => int.semitones === 2)!;
+    
+    return { targetNote: selectedTarget.note, interval };
   }
 
   // 根据参考音生成目标音，确保在设置范围内

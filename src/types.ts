@@ -35,6 +35,9 @@ export interface GameSettings {
   // 多目标音模式配置
   enableMultiTarget: boolean; // 是否启用多目标音模式
   multiTargetCount: number; // 目标音数量 (2-5个)
+  maxSequentialInterval?: number; // 连续音程的最大距离（半音数）
+  // 自由训练模式参考音设置
+  referenceNoteDegree?: number; // 参考音在大调音阶中的度数 (1-7)，undefined 表示使用默认逻辑
 }
 
 export type TrainingMode = 'solfege' | 'absolute';
